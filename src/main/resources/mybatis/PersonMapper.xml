@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mooc.mybatis.dao.PersonMapper" >
+  <resultMap id="BaseResultMap" type="com.mooc.mybatis.bean.Person" >
+  <id column="id" property="id" jdbcType="INTEGER" />
+  <result column="username" property="username" jdbcType="VARCHAR" />
+  <result column="email" property="email" jdbcType="VARCHAR" />
+  <result column="gender" property="gender" jdbcType="VARCHAR" />
+  <result column="dept_id" property="deptId" jdbcType="INTEGER" />
+</resultMap>
+
+  <!-- 根据id删除数据
+     第一:Mybatis入参处理 单参数Mybatis会直接取出参数值给Mapper文件赋值,如#{id} -->
+  <delete id="deletePerson" parameterType="int">
+      delete from person where id=#{parameter1}
+  </delete>
+
+  <!-- 第二：/**3-1 多参数处理-如果传递过来的参数有多个，mybatis会自动的将传递过来的参数映射成param1，param2*/-->
+  <select id="getPersonByNameAndGender" resultType="person">
+    select * from person where username=#{param1} and gender=#{param2}
+  </select>
+
+  <!-- 第三：/**3-3
+  如果多个参数是我们业务逻辑的数据模型，我们就可以直接传入pojo
+     * 在xml中取出传递过去的值的方式为：#{属性名} 取出传入的pojo的属性值
+  /-->
+  <select id="getPersonByNameAndGenderPojo" resultType="person">
+    select * from person where username=#{username} and gender=#{gender}
+  </select>
+
+  <!-- 第三：**3-5
+      如果参数个数比较少，而且没有对应的JavaBean，可以封装成Map
+      在xml中，取值形式为：#{key} 取出Map中对应的值
+      注意：下面#{}中的key，需要跟传递过来的map的key一致。
+      原来map中的key是name，所以这里也是name
+/-->
+  <select id="getPersonByNameAndGenderMap" resultType="person">
+    select * from person where username=#{name} and gender=#{gender}
+  </select>
+
+  <!-- 第四：**3-7
+      多参数处理之-@Param
+     *  由于以上两种方式，需要手动创建Map（如手动创建map，然后再将user，gender放入Map中）及对象(如手动创建Person对象)，不简洁，可以使用@Param注解
+     *  它可以明确指定封装参数时map的key
+
+/-->
+  <select id="getPersonByNameAndGenderParam" resultType="person">
+    select * from person where username=#{paramKey1} and gender=#{paramKey2}
+  </select>
+
+<!--
+  5-1
+  通过foreach 循环去获取数据
+-->
+  <select id="getPersonsByIds" resultType="person">
+    select * from person where id in
+    <foreach collection="array" item="id" index="i" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </select>
+
+
+
+
+
+
+
+
+  <sql id="insertColum" >
+  username, email, gender, dept_id
+  </sql>
+  <insert id="addPerson" parameterType="person">
+    insert into person(username,email,gender) VALUES (#{username},#{email},#{gender})
+  </insert>
+
+  <select id="getAllPersons" resultType="person">
+    SELECT  * from person
+  </select>
+
+  <!--<insert id="addPersons">
+    insert into person(username,email,gender) VALUES
+    <foreach collection="persons" item="person" separator=",">
+      (#{person.username},#{person.email},#{person.gender})
+    </foreach>
+  </insert>-->
+<!-- <insert id="addPersons">
+   <foreach collection="persons" item="person" separator=";">
+      insert into person(username,email,gender) VALUES
+     (#{person.username},#{person.email},#{person.gender})
+    </foreach>
+ </insert>-->
+
+ <!-- insert into person(username,email,gender) VALUES("zhangsan","zhangsan@163.com","F"),("lisi","lisi@163.com","F")
+
+  insert into person(username,email,gender) VALUES("tom","zhangsan@163.com","F");
+  insert into person(username,email,gender) VALUES("jerry","lisi@163.com","F")-->
+
+
+
+
+  <select id="getPersonByCollection" resultType="person">
+
+    select * from person where id=#{test[0]}
+  </select>
+
+</mapper>
