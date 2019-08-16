@@ -111,6 +111,42 @@ public class ParameterTest {
         System.out.println(personList);
     }
 
+    /**
+     *  6-1
+     *  使用mybatis 进行批量插入
+     * **/
+    public void processMybatisBatch() {
+        SqlSession sqlSession = this.getSqlSessionFactory().openSession();
+        PersonMapper personMapper = sqlSession.getMapper(PersonMapper.class);
+
+        List<Person> persons = new ArrayList<Person>();
+
+        for (int i = 0; i < 5; i++) {
+            Person person = new Person("autotest" + i, "autotest" + i + "@gmail.com", "f");
+            persons.add(person);
+        }
+        personMapper.addPersons(persons);
+        sqlSession.commit();
+    }
+
+    /** 6-2
+     * 这种方式是借助MySQL的特性的，连接URL中有allowMultiQueries=true
+     * 使用方式mybatis 方式二进行批量插入
+     * */
+    public void processMybatisBatchWay2() {
+        SqlSession sqlSession = this.getSqlSessionFactory().openSession();
+        PersonMapper personMapper = sqlSession.getMapper(PersonMapper.class);
+
+        List<Person> persons = new ArrayList<Person>();
+
+        for (int i = 0; i < 5; i++) {
+            Person person = new Person("addPersonsWay2" + i, "addPersonsWay2" + i + "@gmail.com", "m");
+            persons.add(person);
+        }
+        personMapper.addPersonsWay2(persons);
+        sqlSession.commit();
+    }
+
 
 
     public void testCollection() {
@@ -127,19 +163,6 @@ public class ParameterTest {
 
 
 
-    public void processMybatisBatch() {
-        SqlSession sqlSession = this.getSqlSessionFactory().openSession();
-        PersonMapper personMapper = sqlSession.getMapper(PersonMapper.class);
-
-        List<Person> persons = new ArrayList<Person>();
-
-        for (int i = 0; i < 5; i++) {
-            Person person = new Person("autotest" + i, "autotest" + i + "@gmail.com", "f");
-            persons.add(person);
-        }
-        personMapper.addPersons(persons);
-        sqlSession.commit();
-    }
 
     public void testBatchForExecutor() {
         SqlSession sqlSession = this.getSqlSessionFactory().openSession(ExecutorType.BATCH);
@@ -190,7 +213,27 @@ public class ParameterTest {
         /**
          * 5-1: 通过foreach 循环获取数据
          * */
-        new ParameterTest().testForeach();
+//        new ParameterTest().testForeach();
+
+        /**
+         * 6-1
+         * 使用mybatis 进行批量插入
+         *
+         * */
+//        new ParameterTest().processMybatisBatch();
+
+        /**
+         * 6-2
+         * 这种方式是借助MySQL的特性的，连接URL中有allowMultiQueries=true
+         * 使用mybatis 方式二进行批量插入
+         *
+         * */
+        new ParameterTest().processMybatisBatchWay2();
+
+
+
+
+
     }
 
 

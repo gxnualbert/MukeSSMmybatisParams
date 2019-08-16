@@ -43,6 +43,25 @@ public interface PersonMapper {
      * */
     public List<Person> getPersonsByIds(int[] ids);
 
+    /**
+     * 6-1 使用mybatis 进行批量插入
+     * **/
+    public int addPersons(@Param("persons") List<Person> persons);
+
+
+    /**
+     * 6-2 使用方式mybatis 方式二进行批量插入
+     *      这种方式是借助MySQL的特性的，连接URL中有allowMultiQueries=true
+     *
+     * */
+
+    public int addPersonsWay2(@Param("personsWay2") List<Person> persons);
+
+
+
+
+
+
 
 //    public Person getPersonByCollection(Collection list);
 
@@ -51,7 +70,7 @@ public interface PersonMapper {
 
 
 //    public int addPersons(@Param("persons") List<Person> persons);
-    public int addPersons( List<Person> persons);
+
 
     /*public int addPerson(Person person);*/
 
